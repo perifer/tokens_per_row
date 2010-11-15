@@ -1,0 +1,4 @@
+; $Id$
+name = Tokens per row handler
+description = A views handler that evaluates tokens per row entered in a textarea.
+core = 6.x

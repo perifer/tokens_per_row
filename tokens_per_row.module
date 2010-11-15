@@ -1,0 +1,12 @@
+<?php
+// $Id$
+
+/**
+ * Implementation of hook_views_api().
+ */
+function tokens_per_row_views_api() {
+  return array(
+    'api' => 2.0,
+    'path' => drupal_get_path('module', 'tokens_per_row'),
+  );
+}
