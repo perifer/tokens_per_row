@@ -35,20 +35,42 @@ class tokens_per_row_handler_field_custom_tokens_per_row extends views_handler_f
   }
 
   function render_altered($alter, $tokens) {
+    $result = '';
+
     // Filter this right away as our substitutions are already sanitized.
-    $value = filter_xss_admin($alter['text']);
+    $text = filter_xss_admin(trim($alter['text']));
 
     // Split text by linebreak (\r, \r\n or \n).
-    $lines = preg_split('/(\r\n?|\n)/', $value);
+    $lines = preg_split('/(\r\n?|\n)/', $text);
     foreach ($lines as $line) {
+      $invert = FALSE;
+
+      if (substr($line, 0, 1) == '!') {
+        if (substr($line, 1, 1) == '!') {
+          $line = substr($line, 1);
+        }
+        else {
+          $invert = TRUE;
+        }
+      }
+
       $value = strtr($line, $tokens);
-      if ($value !== '') {
-        // Return the first non-empty token replacement.
-        return $value;
+
+      // Return the first non-empty token replacement or empty inverted token replacement.
+      if (empty($value)) {
+        if ($invert) {
+          $result = '';
+          break;
+        }
+      }
+      else if (!$invert) {
+        $result = $value;
+        break;
       }
     }
+
     // Default.
-    return '';
+    return $result;
   }
 
   function render($values) {
